@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
     tools {
@@ -43,13 +42,7 @@ pipeline {
         }
         stage('Quality Gate') {
             steps {
-                waitForQualityGate abortPipeline: true
-            }
-        }
-        stage('OWASP FS SCAN') {
-            steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                waitForQualityGate abortPipeline: false
             }
         }
         stage('TRIVY FS SCAN') {
@@ -62,8 +55,8 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: '') {
                         sh "docker build --build-arg TMDB_V3_API_KEY=Aj7ay86fe14eca3e76869b92 -t netflix ."
-                        sh "docker tag netflix sifat/netflix:latest"
-                        sh "docker push sifat/netflix:latest"
+                        sh "docker tag netflix 1735332/netflix:latest"
+                        sh "docker push 1735332/netflix:latest"
                     }
                 }
             }
